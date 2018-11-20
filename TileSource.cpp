@@ -1,28 +1,12 @@
 #include "Tile.h"
 using namespace std;
-
-Area::Area(int a)        // 지역 생성자 a는 타일배열갯수
-{
-	Tile = new CTile[a];
-}
-
-Area::~Area()        // 소멸자 
-{
-	delete[] Tile;
-}
-
-	//Set
-	void CTile::Set_Totla_Population(int Population)
+	void CTile::Set_Total_Population(int Population)
 	{
-		Totla_Population = Population;
+		Total_Population = Population;
 	} 
 	void CTile::Set_Infected_Population(int Population)
 	{
 		Infected_Population = Population;
-	}
-	void CTile::Set_Dead_Population(int Population)
-	{
-		Dead_Population = Population;
 	}
 	void CTile::Set_Survival_Population(int Population)
 	{
@@ -36,44 +20,19 @@ Area::~Area()        // 소멸자
 	{
 		Infection_Status = Status;
 	}
-
-	void CTile::Set_BIRTHRATE(double RATE)
+	void CTile::Set_TileCheck(int a)
 	{
-		BIRTHRATE = RATE;
-	}
-	void CTile::Set_DEATHRATE(double RATE)
-	{
-		DEATHRATE = RATE;
-	}
-	void CTile::Set_MORBIDITY(double RATE)
-	{
-		MORBIDITY = RATE;
-	}
-	void CTile::Set_ContactRate(double RATE)
-	{
-		ContactRate = RATE;
-	}
-	void CTile::Set_LatentRate(double RATE)
-	{
-		LatentRate = RATE;
-	}
-	void CTile::Set_RecoveryRate(double RATE)
-	{
-		RecoveryRate = RATE;
+		TileCheck = a-48;  // char int 변환하느라 48빼줌 char 0 -> int 0 
 	}
 
 	//Get
-	int CTile::Get_Totla_Population()
+	int CTile::Get_Total_Population()
 	{
-		return Totla_Population;
+		return Total_Population;
 	}
 	int CTile::Get_Infected_Population()
 	{
 		return Infected_Population;
-	}
-	int CTile::Get_Dead_Population()
-	{
-		return Dead_Population;
 	}
 	int CTile::Get_Survival_Population()
 	{
@@ -82,37 +41,35 @@ Area::~Area()        // 소멸자
 
 	int CTile::Get_Tile_Feature()
 	{
+		// 1
 		return Tile_Feature;
 	}            // 숫자랑 각각 특징 대응해서 출력해야함(수정필요)
 
-	int CTile::Get_Infection_Status()
+	void CTile::Get_Infection_Status()
 	{
-		return Infection_Status;
+		int InfectedRate;
+		InfectedRate = (Infected_Population * 100) / Total_Population;
+
+		if (InfectedRate == 100)
+			SetColor(0, 12);
+		else if (InfectedRate >= 75)
+			SetColor(0, 4);
+		else if (InfectedRate >= 50)
+			SetColor(0, 14);
+		else if (InfectedRate >= 25)
+			SetColor(0, 6);
+
 	}			 // 숫자랑 각각 상태 색이랑 대응해서 출력해야함(수정필요)
 
-	double CTile::Get_BIRTHRATE()
+	int CTile::Get_TileCheck()
 	{
-		return BIRTHRATE;
+		return TileCheck;
 	}
-	double CTile::Get_DEATHRATE()
+	void PRINT()
 	{
-		return BIRTHRATE;
-	}
-	double CTile::Get_MORBIDITY()
-	{
-		return MORBIDITY;
-	}
-	double CTile::Get_ContactRate()
-	{
-		return ContactRate;
-	}
-	double CTile::Get_LatentRate()
-	{
-		return LatentRate;
-	}
-	double CTile::Get_RecoveryRate()
-	{
-		return RecoveryRate;
+		//화면에 색 변화가 필요할 시 맵을 다시 출력하는 함수.
+
+		
 	}
 
 
@@ -122,4 +79,12 @@ Area::~Area()        // 소멸자
 		Pos.X = x;
 		Pos.Y = y;
 		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+	}
+
+	void SetColor(int bcolor, int tcolor) //bcolor는 배경 색, tcolor는 텍스트 색
+	{
+		HANDLE hcon;
+
+		hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hcon, (bcolor << 4) | tcolor);
 	}
